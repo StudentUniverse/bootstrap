@@ -1,0 +1,18 @@
+{
+  "name": "bootstrap",
+  "version": "0.11.3",
+  "homepage": "https://github.com/StudentUniverse/bootstrap",
+  "authors": [
+    "Dale Wiggins <dale@studentuniverse.com>"
+  ],
+  "description": "SU's version of bootstrap to solve datepicker issues",
+  "main": "dist/ui-bootstrap-tpls-0.12.0-SNAPSHOT.min.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
