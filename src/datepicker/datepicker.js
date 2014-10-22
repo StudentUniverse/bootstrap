@@ -46,6 +46,10 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
   $scope.uniqueId = 'datepicker-' + $scope.$id + '-' + Math.floor(Math.random() * 10000);
   this.activeDate = angular.isDefined($attrs.initDate) ? $scope.$parent.$eval($attrs.initDate) : new Date();
 
+  $scope.$on('datepicker.activeDateChanged', function(event, newDate) {
+    $scope.activeDate = newDate;
+  });
+
   $scope.isActive = function(dateObject) {
     if (self.compare(dateObject.date, self.activeDate) === 0) {
       $scope.activeDateId = dateObject.uid;
@@ -63,8 +67,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
   };
 
   this.render = function() {
-    if ( ngModelCtrl.$modelValue ) {
-      var date = new Date( ngModelCtrl.$modelValue ),
+    if ( $scope.activeDate || ngModelCtrl.$modelValue ) {
+      var date = new Date( $scope.activeDate || ngModelCtrl.$modelValue ),
           isValid = !isNaN(date);
 
       if ( isValid ) {
@@ -147,6 +151,11 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
       self.element[0].focus();
     }, 0 , false);
   };
+
+  console.log(self.element[0]);
+  self.element.bind('blur', function() {
+    console.log('blurred');
+  })
 
   // Listen for focus requests from popup directive
   //$scope.$on('datepicker.focus', focusElement);
@@ -440,7 +449,8 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
       currentText: '@',
       clearText: '@',
       closeText: '@',
-      dateDisabled: '&'
+      dateDisabled: '&',
+      activeDate:'='
     },
     link: function(scope, element, attrs, ngModel) {
       var dateFormat,
@@ -456,6 +466,10 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
       attrs.$observe('datepickerPopup', function(value) {
           dateFormat = value || datepickerPopupConfig.datepickerPopup;
           ngModel.$render();
+      });
+
+      scope.$watch('activeDate', function() {
+        scope.$broadcast('datepicker.activeDateChanged', scope.activeDate);
       });
 
       // popup element used to display calendar
